@@ -4,7 +4,7 @@ Generate tokens for securing content distributed with the Fastly CDN, in go!
 
 ## Usage
 Install the ```fastly-tokens``` library:
-```go get github.com/zencoder/fastly-tokens/ft```
+```go get github.com/brightcove/playback_fastly-tokens/ft```
 
 ```go
 package main
@@ -15,7 +15,7 @@ import (
   "log"
   "time"
 
-  "github.com/zencoder/fastly-tokens/ft"
+  "github.com/brightcove/playback_fastly-tokens/ft"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 ```shell
 BenchmarkGenerateToken-8   	 1000000	      1771 ns/op	     848 B/op	      12 allocs/op
 PASS
-ok  	github.com/zencoder/fastly-tokens/ft	2.101s
+ok  	github.com/brightcove/playback_fastly-tokens/ft	2.101s
 ```
 
 ## Development
@@ -44,7 +44,7 @@ Tested on go 1.13
 
 ### CI
 
-[This library builds on Circle CI, here.](https://circleci.com/gh/zencoder/fastly-tokens/)
+This library builds on Jenkins.
 
 ## License
 
