@@ -1,0 +1,50 @@
+name: ci
+
+# Port of .ci/Jenkinsfile (Jenkins TestOnlyPipeline job
+# playback/fastly-tokens/test-only). Same stages, same commands, same order:
+# go mod download, then make (default target: build test).
+#
+# Jenkins is untouched and keeps running until the owner retires the job.
+#
+# This repository is PUBLIC, so it cannot reference the private
+# brightcove/cd_workflows action the other ported playback libraries use
+# (go-setup). It does not need it either: go.mod has no dependencies at all, so
+# there is no private module to authenticate for. Plain setup-go, then the
+# Jenkins commands.
+#
+# There is deliberately no scanner job: the org-level Wiz GitHub App already runs
+# IaC, SAST, secret and vulnerability scans on every PR here, alongside
+# trufflehog and the guardian security review.
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Build & unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      # Go from go.mod, as the golang:1.26 agent image did.
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: go.mod
+
+      # Jenkins "Prepare test environment": go mod download.
+      - name: Download modules
+        run: go mod download
+
+      # Jenkins "Run Unit Tests": make.
+      - name: Build and test
+        run: make
